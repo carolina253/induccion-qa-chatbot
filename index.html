@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Inducción QA - Asistente para Aprendices SENA</title>
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           ESTILOS PRINCIPALES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .chat-section {
+            flex: 3;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .chat-container {
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            background: #007bff;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 18px 18px 0 18px;
+        }
+        
+        .bot-message {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 18px 18px 18px 0;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .input-area {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-area input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+        }
+        
+        .input-area button {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quick-links {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .quick-links h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .quick-link {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: transform 0.2s;
+        }
+        
+        .quick-link:hover {
+            transform: translateX(5px);
+            border-color: #007bff;
+        }
+        
+        .resources {
+            padding: 30px;
+            background: #f0f7ff;
+        }
+        
+        .resources h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .resource-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .video { color: #ff4757; }
+        .doc { color: #2ed573; }
+        .team { color: #3742fa; }
+        .test { color: #ffa502; }
+        
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+        
+        /* ============================================
+           ESTILOS PARA EL CENTRO DE SOPORTE
+           ============================================ */
+        .support-section {
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 2px solid #007bff;
+        }
+        
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .support-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-left: 4px solid #007bff;
+        }
+        
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+        }
+        
+        /* Botón de emergencia */
+        #emergencyHelp {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            display: none;
+        }
+        
+        /* Animación para botón de emergencia */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        #emergencyHelp {
+            animation: pulse 2s infinite;
+        }
+        
+        #emergencyHelp:hover {
+            background: #c82333 !important;
+            transform: scale(1.1);
+        }
+        
+        /* ============================================
+           ESTILOS PARA EL CHATBOT MEJORADO
+           ============================================ */
+        .typing-dots {
+            display: inline-block;
+        }
+        
+        .typing-dots span {
+            animation: typing 1.4s infinite;
+            opacity: 0;
+        }
+        
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+        
+        .error {
+            background-color: #ffe6e6 !important;
+            border-color: #ff9999 !important;
+        }
+        
+        .message.bot-message a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        
+        .message.bot-message a:hover {
+            color: #0056b3;
+        }
+        
+        /* Estilos para botones dentro del chat */
+        .message.bot-message button {
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .message.bot-message button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Mejorar scroll */
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .messages::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        
+        .messages::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .chat-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .support-options {
+                grid-template-columns: 1fr !important;
+            }
+            
+            #emergencyHelp {
+                bottom: 10px;
+                left: 10px;
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Estilos para móviles muy pequeños */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+            }
+            
+            .chat-container {
+                height: 400px;
+            }
+            
+            .input-area {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .input-area button {
+                width: 100%;
+            }
+        }
+        
+        /* ============================================
+           ESTILOS ADICIONALES PARA MEJOR UX
+           ============================================ */
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .warning {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .danger {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Inducción QA - Asistente SENA</h1>
+            <p>Tu guía 24/7 para aprender Azure DevOps, TestLink y Microsoft Planner</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-robot" style="font-size: 24px; color: #007bff;"></i>
+                        <div>
+                            <h3>QA Copilot</h3>
+                            <p style="font-size: 0.9rem; opacity: 0.8;">En línea - Listo para ayudarte</p>
+                        </div>
+                    </div>
+                    <div class="messages" id="messages">
+                        <!-- Mensaje de bienvenida -->
+                        <div class="message bot-message">
+                            <strong>QA Copilot:</strong> ¡Hola! Soy tu asistente de inducción. ¿Es tu primer día? Puedo guiarte paso a paso en el uso de Azure DevOps, TestLink y Microsoft Planner. ¿Por dónde quieres empezar?
+                        </div>
+                    </div>
+                    <div class="input-area">
+                        <input type="text" id="userInput" placeholder="Escribe tu pregunta aquí... (ej: ¿Cómo uso TestLink?)" autocomplete="off">
+                        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Enviar</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="quick-links">
+                <h3><i class="fas fa-bolt"></i> Acceso Rápido</h3>
+                <div class="quick-link" onclick="quickAction('azure')">
+                    <i class="fab fa-microsoft" style="color: #0078d4;"></i>
+                    <span>Configurar Azure DevOps</span>
+                </div>
+                <div class="quick-link" onclick="quickAction('testlink')">
+                    <i class="fas fa-vial" style="color: #28a745;"></i>
+                    <span>Primer caso en TestLink</span>
+                </div>
+                <div class="quick-link" onclick="quickAction('planner')">
+                    <i class="fas fa-tasks" style="color: #6f42c1;"></i>
+                    <span>Ver mis tareas en Planner</span>
+                </div>
+                <div class="quick-link" onclick="quickAction('team')">
+                    <i class="fas fa-users" style="color: #fd7e14;"></i>
+                    <span>Conocer al equipo</span>
+                </div>
+                <div class="quick-link" onclick="quickAction('video')">
+                    <i class="fas fa-video" style="color: #dc3545;"></i>
+                    <span>Video: Todo en 3 minutos</span>
+                </div>
+                <div class="quick-link" onclick="quickAction('faq')">
+                    <i class="fas fa-question-circle" style="color: #17a2b8;"></i>
+                    <span>Preguntas frecuentes</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Centro de Soporte -->
+        <div class="support-section">
+            <h3 style="text-align: center; margin-bottom: 25px; color: #333;">
+                <i class="fas fa-life-ring"></i> Centro de Soporte - ¿Sigues con Dudas?
+            </h3>
+            
+            <div class="support-options">
+                <!-- Opción 1: Chat Directo con Experto -->
+                <div class="support-card" onclick="startExpertChat()" style="border-left-color: #007bff;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <div style="background: #007bff; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4 style="margin: 0; color: #333;">Chat en Vivo con Mentor</h4>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                        ¿Necesitas explicación personalizada? Conéctate ahora con un mentor del equipo.
+                    </p>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">
+                            <i class="fas fa-circle" style="font-size: 8px; color: #28a745;"></i> Disponible
+                        </span>
+                        <span style="color: #007bff; font-weight: bold;">→ Iniciar chat</span>
+                    </div>
+                </div>
+                
+                <!-- Opción 2: WhatsApp Directo -->
+                <div class="support-card" onclick="openWhatsApp()" style="border-left-color: #25D366;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <div style="background: #25D366; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h4 style="margin: 0; color: #333;">Soporte por WhatsApp</h4>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                        Respuesta en minutos. Envía tu pregunta directamente al equipo de soporte.
+                    </p>
+                    <div style="color: #25D366; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                        <i class="fas fa-phone-alt"></i> +57 300 123 4567
+                    </div>
+                </div>
+                
+                <!-- Opción 3: Email de Soporte -->
+                <div class="support-card" onclick="openEmailSupport()" style="border-left-color: #dc3545;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <div style="background: #dc3545; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4 style="margin: 0; color: #333;">Email de Soporte</h4>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                        Para consultas detalladas o documentación específica.
+                    </p>
+                    <div style="color: #dc3545; font-weight: bold;">
+                        soporte.qa@tuempresa.com
+                    </div>
+                </div>
+                
+                <!-- Opción 4: Tutoriales Paso a Paso -->
+                <div class="support-card" onclick="showStepByStepTutorials()" style="border-left-color: #6f42c1;">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                        <div style="background: #6f42c1; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4 style="margin: 0; color: #333;">Tutoriales Paso a Paso</h4>
+                    </div>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">
+                        Guías detalladas con screenshots para cada herramienta.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span style="background: #e9ecef; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">Azure</span>
+                        <span style="background: #e9ecef; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">TestLink</span>
+                        <span style="background: #e9ecef; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">Planner</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Resources Section -->
+        <div class="resources">
+            <h2><i class="fas fa-graduation-cap"></i> Recursos de Aprendizaje</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <i class="fas fa-video video"></i>
+                    <h3>Videos Cortos</h3>
+                    <p>Tutoriales de 2-3 minutos para aprender rápido</p>
+                    <button class="resource-btn" onclick="showVideos()" style="background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Ver videos</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-file-pdf doc"></i>
+                    <h3>Documentación</h3>
+                    <p>Plantillas y guías descargables</p>
+                    <button class="resource-btn" onclick="showDocs()" style="background: #2ed573; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Descargar</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-users team"></i>
+                    <h3>Tu Equipo</h3>
+                    <p>Conoce a tus mentores y compañeros</p>
+                    <button class="resource-btn" onclick="showTeam()" style="background: #3742fa; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Ver equipo</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-vial test"></i>
+                    <h3>Practicar</h3>
+                    <p>Ejercicios y casos de prueba reales</p>
+                    <button class="resource-btn" onclick="showPractice()" style="background: #ffa502; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Comenzar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 Área QA - Solo para uso interno de aprendices SENA</p>
+            <p><i class="fas fa-shield-alt"></i> Acceso seguro | <i class="fas fa-mobile-alt"></i> Compatible con móviles</p>
+        </div>
+    </div>
+
+    <!-- Botón flotante de emergencia -->
+    <div id="emergencyHelp">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span style="font-weight: bold;">¡AYUDA URGENTE!</span>
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT COMPLETO - TODO INTEGRADO
+         ============================================ -->
+    <script>
+    // ============================================
+    // VARIABLES Y CONFIGURACIÓN
+    // ============================================
+    let conversationHistory = [];
+    let helpTimer;
+
+    // ============================================
+    // FUNCIONES PRINCIPALES DEL CHAT
+    // ============================================
+
+    // Función para enviar mensajes
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const message = input.value.trim();
+        
+        if (message === '') return;
+        
+        const messagesDiv = document.getElementById('messages');
+        
+        // Mostrar mensaje del usuario
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> ${message}`;
+        messagesDiv.appendChild(userMessage);
+        
+        // Limpiar input y deshabilitar temporalmente
+        input.value = '';
+        input.disabled = true;
+        
+        // Detectar frustración
+        if (detectarFrustracion(message)) {
+            setTimeout(() => {
+                mostrarAyudaFrustracion();
+            }, 500);
+        }
+        
+        // Mostrar "escribiendo..."
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'message bot-message typing';
+        typingIndicator.id = 'typingIndicator';
+        typingIndicator.innerHTML = `<strong>QA Copilot:</strong> <span class="typing-dots"><i>escribiendo</i><span>.</span><span>.</span><span>.</span></span>`;
+        messagesDiv.appendChild(typingIndicator);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        
+        try {
+            // Obtener respuesta del chatbot (IA o respuestas predefinidas)
+            const botResponse = await getChatbotResponse(message);
+            
+            // Remover "escribiendo..."
+            const typingElement = document.getElementById('typingIndicator');
+            if (typingElement) {
+                typingElement.remove();
+            }
+            
+            // Mostrar respuesta
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            
+            // Formatear la respuesta
+            const formattedResponse = formatResponse(botResponse);
+            
+            botMessage.innerHTML = `<strong>QA Copilot:</strong> ${formattedResponse}`;
+            messagesDiv.appendChild(botMessage);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            
+            // Remover "escribiendo..."
+            const typingElement = document.getElementById('typingIndicator');
+            if (typingElement) {
+                typingElement.remove();
+            }
+            
+            // Mostrar mensaje de error
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'message bot-message error';
+            errorMessage.innerHTML = `<strong>QA Copilot:</strong> ¡Ups! Estoy teniendo problemas técnicos. Por favor, intenta de nuevo o usa alguna de las opciones de soporte directo.`;
+            messagesDiv.appendChild(errorMessage);
+        }
+        
+        // Rehabilitar input y hacer focus
+        input.disabled = false;
+        input.focus();
+        
+        // Auto scroll y reiniciar temporizador de ayuda
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        startHelpTimer();
+    }
+
+    // Función para respuestas predefinidas (cuando no hay IA)
+    async function getChatbotResponse(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        // Respuestas inteligentes predefinidas
+        if (lowerMessage.includes('hola') || lowerMessage.includes('buenos') || lowerMessage.includes('primero')) {
+            return `¡Hola! Soy tu asistente de inducción QA. 👋
+
+**¿Es tu primer día?** Te guío paso a paso:
+
+<span class="step-number">1</span> **📧 Configura tu email** corporativo
+<span class="step-number">2</span> **🎬 Ve este video** de introducción (3 min)
+<span class="step-number">3</span> **🔧 Configura Azure DevOps** aquí: [link]
+<span class="step-number">4</span> **📋 Crea tu primer caso** en TestLink
+
+<div class="tip-box">
+💡 <strong>Tip:</strong> Puedes usar los botones de "Acceso Rápido" para ir directo a lo que necesitas.
+</div>
+
+¿Por cuál quieres empezar?`;
+        }
+        
+        if (lowerMessage.includes('azure') || lowerMessage.includes('devops')) {
+            return `**Azure DevOps - Configuración inicial:**
+
+🔹 **URL de acceso:** [https://dev.azure.com/tuempresa]
+🔹 **Tu usuario:** [tu_email@empresa.com]
+🔹 **Proyecto asignado:** "QA-Training-2024"
+
+**Pasos:**
+1. Login con tus credenciales
+2. Busca el proyecto "QA-Training"
+3. Familiarízate con las secciones:
+   • <span class="highlight">Repos</span> (Código)
+   • <span class="highlight">Boards</span> (Bugs/Tareas)
+   • <span class="highlight">Pipelines</span> (Automatización)
+
+**Video tutorial:** [Ver ahora - 2:30 min]
+
+<div class="info-box">
+📞 <strong>¿Sigues con dudas?</strong> Usa el <span class="danger">Centro de Soporte</span> abajo para contactar a un mentor en vivo.
+</div>
+
+¿Necesitas ayuda con algo específico de Azure?`;
+        }
+        
+        if (lowerMessage.includes('testlink') || lowerMessage.includes('caso') || lowerMessage.includes('prueba')) {
+            return `**TestLink - Primer caso de prueba:**
+
+📝 **Para crear tu primer caso:**
+1. Accede a: [https://testlink.tuempresa.com]
+2. Usuario: [tu_email]
+3. Ve a: Test Specification → QA-Training
+4. Click en "Create Test Case"
+
+**Estructura recomendada:**
+• <span class="highlight">Summary:</span> Breve descripción
+• <span class="highlight">Preconditions:</span> Requisitos previos
+• <span class="highlight">Steps:</span> Acciones paso a paso
+• <span class="highlight">Expected Results:</span> Qué debe pasar
+
+**📄 Plantilla:** [Descargar formato estándar]
+**🎥 Video:** [Ver tutorial - 3:15 min]
+
+<div class="tip-box">
+💡 <strong>Consejo:</strong> Empieza copiando un caso existente y modifícalo para entender la estructura.
+</div>
+
+¿Quieres un ejemplo completo de caso de prueba?`;
+        }
+        
+        if (lowerMessage.includes('planner') || lowerMessage.includes('tarea') || lowerMessage.includes('qué hacer')) {
+            return `**Microsoft Planner - Tus tareas:**
+
+📅 **Tu tablero personal:** "Inducción QA - [Tu Nombre]"
+
+**Tareas esta semana:**
+✅ <span class="success">Alta prioridad:</span>
+   • Revisar 10 casos de prueba existentes
+   • Crear 3 casos nuevos para login
+   • Asistir a reunión de inducción (mañana 10am)
+
+✅ <span class="warning">Prioridad media:</span>
+   • Configurar entorno de testing
+   • Leer documentación de procesos
+
+**Próximas fechas:**
+• <span class="highlight">Revisión con mentor:</span> Todos los días 3pm
+• <span class="highlight">Daily meeting:</span> 9:30am (sala QA-101)
+
+<div class="info-box">
+⏰ <strong>Recordatorio:</strong> Actualiza el progreso de tus tareas cada día en Planner.
+</div>
+
+¿Necesitas más detalles de alguna tarea?`;
+        }
+        
+        if (lowerMessage.includes('equipo') || lowerMessage.includes('mentor') || lowerMessage.includes('quién')) {
+            return `**👥 Tu equipo de QA:**
+
+**👨‍💼 <span class="highlight">CARLOS</span>** - *Tu mentor principal*
+• Rol: QA Senior - Especialista en automatización
+• Experiencia: 5 años en la empresa
+• Disponibilidad: Lunes a Jueves 9am-5pm
+• Contacto: carlos.mentor@tuempresa.com
+• Te ayudará con: Configuración, dudas técnicas, revisiones
+
+**👩‍💼 <span class="highlight">ANA</span>** - *Líder de QA*
+• Rol: QA Manager
+• Experiencia: 10+ años en testing
+• Reunión con ella: Viernes 9am (grupal)
+• Contacto: ana.lider@tuempresa.com
+
+**👨‍💼 <span class="highlight">LUIS</span>** - *QA Analyst*
+• Especialidad: Pruebas de performance
+• Disponible para consultas: Martes y Jueves
+
+<div class="tip-box">
+💬 <strong>¿Quieres contactarlos?</strong> Usa las opciones del <span class="danger">Centro de Soporte</span> abajo.
+</div>
+
+¿Quieres agendar tiempo con alguien específico?`;
+        }
+        
+        // Respuesta por defecto
+        return `Entendido. ¿Te gustaría que:
+
+1. **Te explique paso a paso** algún proceso
+2. **Te muestre un video tutorial** específico
+3. **Te ayude a contactar** a tu mentor
+4. **Genere un ejemplo práctico** para que sigues
+
+<div class="info-box">
+🔍 <strong>O puedes:</strong> Usar los botones de <span class="success">"Acceso Rápido"</span> a la derecha para ir directo a lo que necesitas.
+</div>
+
+Solo dime qué necesitas. 😊`;
+    }
+
+    // ============================================
+    // FUNCIONES DE FORMATO
+    // ============================================
+
+    function formatResponse(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>')
+            .replace(/🔹/g, '• ')
+            .replace(/🔸/g, '• ')
+            .replace(/✅/g, '✓ ')
+            .replace(/❌/g, '✗ ');
+    }
+
+    // ============================================
+    // FUNCIONES DE ACCESO RÁPIDO
+    // ============================================
+
+    function quickAction(action) {
+        const messagesDiv = document.getElementById('messages');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        
+        let messageText = getActionText(action);
+        
+        userMessage.innerHTML = `<strong>Tú:</strong> ${messageText}`;
+        messagesDiv.appendChild(userMessage);
+        
+        // Procesar la acción
+        switch(action) {
+            case 'azure':
+                getChatbotResponse('azure').then(response => showResponse(response));
+                break;
+            case 'testlink':
+                getChatbotResponse('testlink').then(response => showResponse(response));
+                break;
+            case 'planner':
+                getChatbotResponse('planner').then(response => showResponse(response));
+                break;
+            case 'team':
+                getChatbotResponse('equipo').then(response => showResponse(response));
+                break;
+            case 'video':
+                showVideosInChat();
+                break;
+            case 'faq':
+                showFAQs();
+                break;
+        }
+    }
+
+    function getActionText(action) {
+        const actions = {
+            'azure': 'Quiero configurar Azure DevOps',
+            'testlink': 'Cómo creo mi primer caso en TestLink',
+            'planner': 'Cómo veo mis tareas en Planner',
+            'team': 'Quiero conocer al equipo',
+            'video': 'Muéstrame videos tutoriales',
+            'faq': 'Preguntas frecuentes'
+        };
+        return actions[action] || 'Ayuda';
+    }
+
+    function showResponse(response) {
+        const messagesDiv = document.getElementById('messages');
+        const botMessage = document.createElement('div');
+        botMessage.className = 'message bot-message';
+        botMessage.innerHTML = `<strong>QA Copilot:</strong> ${formatResponse(response)}`;
+        messagesDiv.appendChild(botMessage);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // ============================================
+    // FUNCIONES DE RECURSOS
+    // ============================================
+
+    function showVideos() {
+        quickAction('video');
+    }
+
+    function showVideosInChat() {
+        const messagesDiv = document.getElementById('messages');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero ver videos tutoriales`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #ff4757;"><i class="fas fa-video"></i> Videos Tutoriales Disponibles</h4>
+                    
+                    <div style="display: grid; gap: 10px; margin: 15px 0;">
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4;">
+                            <h5 style="margin: 0 0 10px 0; color: #0078d4;">🎬 Azure DevOps - Primeros pasos</h5>
+                            <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9rem;">Duración: 3:15 min | Nivel: Básico</p>
+                            <button onclick="window.open('#', '_blank')" style="background: #0078d4; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%;">
+                                <i class="fas fa-play"></i> Ver ahora
+                            </button>
+                        </div>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                            <h5 style="margin: 0 0 10px 0; color: #28a745;">🎬 TestLink - Crear caso de prueba</h5>
+                            <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9rem;">Duración: 2:45 min | Nivel: Básico</p>
+                            <button onclick="window.open('#', '_blank')" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%;">
+                                <i class="fas fa-play"></i> Ver ahora
+                            </button>
+                        </div>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                            <h5 style="margin: 0 0 10px 0; color: #6f42c1;">🎬 Microsoft Planner - Gestión de tareas</h5>
+                            <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9rem;">Duración: 2:30 min | Nivel: Básico</p>
+                            <button onclick="window.open('#', '_blank')" style="background: #6f42c1; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%;">
+                                <i class="fas fa-play"></i> Ver ahora
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 15px;">
+                        <i class="fas fa-info-circle"></i> Todos los videos están en español y están diseñados específicamente para aprendices SENA.
+                    </p>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function showDocs() {
+        const messagesDiv = document.getElementById('messages');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero ver la documentación disponible`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #2ed573;"><i class="fas fa-file-pdf"></i> Documentación Disponible</h4>
+                    
+                    <div style="display: grid; gap: 10px; margin: 15px 0;">
+                        <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <div style="background: #2ed573; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-file-word"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0 0 5px 0;">Plantilla caso de prueba</h5>
+                                <p style="margin: 0; color: #666; font-size: 0.9rem;">Formato estándar para todos los casos</p>
+                            </div>
+                            <button onclick="window.open('#', '_blank')" style="background: #2ed573; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                                Descargar
+                            </button>
+                        </div>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <div style="background: #17a2b8; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0 0 5px 0;">Checklist primer día</h5>
+                                <p style="margin: 0; color: #666; font-size: 0.9rem;">Qué hacer en tus primeros 3 días</p>
+                            </div>
+                            <button onclick="window.open('#', '_blank')" style="background: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                                Descargar
+                            </button>
+                        </div>
+                        
+                        <div style="background: white; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                            <div style="background: #6f42c1; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0 0 5px 0;">Guía de procesos QA 2024</h5>
+                                <p style="margin: 0; color: #666; font-size: 0.9rem;">Flujos de trabajo del departamento</p>
+                            </div>
+                            <button onclick="window.open('#', '_blank')" style="background: #6f42c1; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                                Descargar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 15px;">
+                        <i class="fas fa-info-circle"></i> Todos los documentos están actualizados y aprobados por el líder de QA.
+                    </p>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function showTeam() {
+        quickAction('team');
+    }
+
+    function showPractice() {
+        const messagesDiv = document.getElementById('messages');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero practicar con ejercicios`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #ffa502;"><i class="fas fa-vial"></i> Ejercicios Prácticos</h4>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h5 style="margin-top: 0; color: #333;">🎯 Ejercicio 1: Crear casos para login</h5>
+                        <p><strong>Objetivo:</strong> Crear 3 casos de prueba para un sistema de login</p>
+                        <p><strong>Requisitos:</strong></p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Usuario: admin | Contraseña: admin123</li>
+                            <li>Máximo 3 intentos fallidos</li>
+                            <li>Bloqueo de cuenta después de 3 intentos</li>
+                        </ul>
+                        <button onclick="window.open('#', '_blank')" style="background: #ffa502; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">
+                            <i class="fas fa-download"></i> Descargar plantilla
+                        </button>
+                    </div>
+                    
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                        <h5 style="margin-top: 0; color: #333;">🎯 Ejercicio 2: Reportar un bug</h5>
+                        <p><strong>Escenario:</strong> Encontraste un bug en el sistema de login</p>
+                        <p><strong>Síntoma:</strong> Al poner credenciales incorrectas, no muestra mensaje de error</p>
+                        <button onclick="window.open('#', '_blank')" style="background: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;">
+                            <i class="fas fa-bug"></i> Ver ejemplo de bug report
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 10px; background: #d1ecf1; border-radius: 5px;">
+                        <p style="margin: 0; color: #0c5460; font-size: 0.9rem;">
+                            <i class="fas fa-lightbulb"></i> <strong>Sugerencia:</strong> Completa el Ejercicio 1 primero y pide revisión a tu mentor antes de continuar.
+                        </p>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function showFAQs() {
+        const messagesDiv = document.getElementById('messages');
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero ver preguntas frecuentes`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #17a2b8;"><i class="fas fa-question-circle"></i> Preguntas Frecuentes</h4>
+                    
+                    <div style="margin: 15px 0;">
+                        <details style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <summary style="font-weight: bold; color: #333;">❓ ¿Cuál es el horario de trabajo?</summary>
+                            <p style="margin-top: 10px; color: #666;">Lunes a viernes de 8:00 AM a 5:00 PM, con flexibilidad horaria. Almuerzo de 12:00 PM a 1:00 PM.</p>
+                        </details>
+                        
+                        <details style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <summary style="font-weight: bold; color: #333;">❓ ¿Dónde reporto un bug?</summary>
+                            <p style="margin-top: 10px; color: #666;">En Azure DevOps → Tableros → Elementos de trabajo → Nuevo bug. <a href="#" style="color: #007bff;">Ver video tutorial</a></p>
+                        </details>
+                        
+                        <details style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <summary style="font-weight: bold; color: #333;">❓ ¿Cómo solicito permisos o vacaciones?</summary>
+                            <p style="margin-top: 10px; color: #666;">Enviar email a recursos.humanos@tuempresa.com con copia a tu mentor, mínimo 3 días antes.</p>
+                        </details>
+                        
+                        <details style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <summary style="font-weight: bold; color: #333;">❓ ¿Dónde están los baños y la cocina?</summary>
+                            <p style="margin-top: 10px; color: #666;">Baños: al final del pasillo a la derecha. Cocina: al lado de la sala de reuniones. Agua y café gratis.</p>
+                        </details>
+                        
+                        <details style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer;">
+                            <summary style="font-weight: bold; color: #333;">❓ ¿Cuándo es la reunión diaria?</summary>
+                            <p style="margin-top: 10px; color: #666;">Daily meeting: Lunes a viernes a las 9:30 AM en la sala "QA Team" o por Teams.</p>
+                        </details>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666;">
+                        <i class="fas fa-info-circle"></i> ¿No encuentras tu pregunta? Escribe en el chat y te ayudo personalmente.
+                    </p>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    // ============================================
+    // FUNCIONES DE SOPORTE - CENTRO DE AYUDA
+    // ============================================
+
+    function startExpertChat() {
+        const messagesDiv = document.getElementById('messages');
+        
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero hablar con un mentor en vivo`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #007bff;">💬 Chat en Vivo con Mentor</h4>
+                    
+                    <p><strong>Opción 1 - Microsoft Teams:</strong></p>
+                    <button onclick="window.open('https://teams.microsoft.com/l/chat/0/0?users=carlos.mentor@tuempresa.com', '_blank')" 
+                            style="background: #6264A7; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin: 5px 0; width: 100%;">
+                        <i class="fab fa-microsoft"></i> Chatear con Carlos (Mentor)
+                    </button>
+                    
+                    <p><strong>Opción 2 - Slack:</strong></p>
+                    <button onclick="window.open('slack://user?team=T123456&id=U123456', '_blank')"
+                            style="background: #4A154B; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin: 5px 0; width: 100%;">
+                        <i class="fab fa-slack"></i> Unirse a canal #soporte-qa
+                    </button>
+                    
+                    <p><strong>Horarios disponibles:</strong></p>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li><strong>Carlos:</strong> Lunes-Jueves 9am-5pm</li>
+                        <li><strong>Ana:</strong> Martes y Jueves 2pm-4pm</li>
+                        <li><strong>Soporte urgente:</strong> Siempre en WhatsApp</li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <i class="fas fa-info-circle"></i> El mentor te responderá en menos de 15 minutos durante horario laboral.
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function openWhatsApp() {
+        const messagesDiv = document.getElementById('messages');
+        
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero contactar por WhatsApp`;
+        messagesDiv.appendChild(userMessage);
+        
+        const whatsappNumber = '573001234567';
+        const defaultMessage = encodeURIComponent('Hola, soy un aprendiz SENA de QA y necesito ayuda con:');
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #25d36610; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #25d36630;">
+                    <h4 style="margin-top: 0; color: #25D366;"><i class="fab fa-whatsapp"></i> Soporte por WhatsApp</h4>
+                    
+                    <p><strong>Equipo de soporte:</strong></p>
+                    <div style="margin: 10px 0;">
+                        <button onclick="window.open('https://wa.me/${whatsappNumber}?text=${defaultMessage}', '_blank')"
+                                style="background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 25px; cursor: pointer; width: 100%;">
+                            <i class="fab fa-whatsapp"></i> Soporte General QA
+                        </button>
+                    </div>
+                    
+                    <p><strong>Contactos directos:</strong></p>
+                    <div style="background: white; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <p style="margin: 5px 0;"><strong>Carlos (Mentor):</strong> +57 300 123 4567</p>
+                        <p style="margin: 5px 0;"><strong>Ana (Líder QA):</strong> +57 300 987 6543</p>
+                        <p style="margin: 5px 0;"><strong>Soporte Técnico:</strong> +57 301 234 5678</p>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666;">
+                        <i class="fas fa-clock"></i> Respuesta promedio: <strong>5-15 minutos</strong><br>
+                        <i class="fas fa-check-circle"></i> Disponible: <strong>24/7 para emergencias</strong>
+                    </p>
+                    
+                    <div class="tip-box">
+                        <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Incluye screenshots y describe exactamente en qué paso te quedaste.
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function openEmailSupport() {
+        const messagesDiv = document.getElementById('messages');
+        
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero enviar un email de soporte`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #ddd;">
+                    <h4 style="margin-top: 0; color: #dc3545;"><i class="fas fa-envelope"></i> Email de Soporte QA</h4>
+                    
+                    <p><strong>Direcciones de email:</strong></p>
+                    <div style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <p style="margin: 5px 0;">
+                            <strong>🔧 Soporte Técnico:</strong> 
+                            <a href="mailto:soporte.qa@tuempresa.com?subject=Soporte%20Aprendiz%20SENA&body=Hola,%20soy%20aprendiz%20SENA%20y%20necesito%20ayuda%20con:" 
+                               style="color: #007bff; text-decoration: none;">
+                                soporte.qa@tuempresa.com
+                            </a>
+                        </p>
+                        
+                        <p style="margin: 5px 0;">
+                            <strong>👨‍🏫 Mentoría:</strong> 
+                            <a href="mailto:mentores.qa@tuempresa.com" 
+                               style="color: #007bff; text-decoration: none;">
+                                mentores.qa@tuempresa.com
+                            </a>
+                        </p>
+                        
+                        <p style="margin: 5px 0;">
+                            <strong>📋 Asuntos Administrativos:</strong> 
+                            <a href="mailto:admin.qa@tuempresa.com" 
+                               style="color: #007bff; text-decoration: none;">
+                                admin.qa@tuempresa.com
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <p><strong>Plantillas recomendadas:</strong></p>
+                    <div style="display: flex; gap: 10px; margin: 10px 0;">
+                        <button onclick="copyEmailTemplate('bug')"
+                                style="background: #17a2b8; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; flex: 1;">
+                            <i class="fas fa-bug"></i> Reportar Bug
+                        </button>
+                        <button onclick="copyEmailTemplate('duda')"
+                                style="background: #6f42c1; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; flex: 1;">
+                            <i class="fas fa-question-circle"></i> Consulta Técnica
+                        </button>
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666;">
+                        <i class="fas fa-clock"></i> Tiempo de respuesta: <strong>2-4 horas hábiles</strong><br>
+                        <i class="fas fa-paperclip"></i> <strong>Incluye:</strong> Screenshots, pasos para reproducir, entorno
+                    </p>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    function showStepByStepTutorials() {
+        const messagesDiv = document.getElementById('messages');
+        
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user-message';
+        userMessage.innerHTML = `<strong>Tú:</strong> Quiero ver tutoriales paso a paso`;
+        messagesDiv.appendChild(userMessage);
+        
+        setTimeout(() => {
+            const botMessage = document.createElement('div');
+            botMessage.className = 'message bot-message';
+            botMessage.innerHTML = `
+                <strong>QA Copilot:</strong> 
+                <div style="background: #f0f7ff; padding: 15px; border-radius: 10px; margin-top: 10px;">
+                    <h4 style="margin-top: 0; color: #6f42c1;"><i class="fas fa-graduation-cap"></i> Tutoriales Paso a Paso</h4>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin: 15px 0;">
+                        
+                        <!-- Azure DevOps -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #0078d4;">
+                            <h5 style="margin-top: 0; color: #0078d4;"><i class="fab fa-microsoft"></i> Azure DevOps</h5>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button onclick="openTutorial('azure-1')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    1. Primer acceso
+                                </button>
+                                <button onclick="openTutorial('azure-2')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    2. Reportar bug
+                                </button>
+                                <button onclick="openTutorial('azure-3')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    3. Ver tareas
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- TestLink -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                            <h5 style="margin-top: 0; color: #28a745;"><i class="fas fa-vial"></i> TestLink</h5>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button onclick="openTutorial('testlink-1')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    1. Crear caso
+                                </button>
+                                <button onclick="openTutorial('testlink-2')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    2. Ejecutar prueba
+                                </button>
+                                <button onclick="openTutorial('testlink-3')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    3. Reportar resultado
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Microsoft Planner -->
+                        <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #6f42c1;">
+                            <h5 style="margin-top: 0; color: #6f42c1;"><i class="fas fa-tasks"></i> Microsoft Planner</h5>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button onclick="openTutorial('planner-1')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    1. Ver mis tareas
+                                </button>
+                                <button onclick="openTutorial('planner-2')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    2. Actualizar progreso
+                                </button>
+                                <button onclick="openTutorial('planner-3')" style="background: #e9ecef; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                                    3. Comunicar bloqueos
+                                </button>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <p style="font-size: 0.9rem; color: #666;">
+                        <i class="fas fa-video"></i> Cada tutorial incluye: <strong>Video + PDF + Ejemplo práctico</strong>
+                    </p>
+                    
+                    <div class="tip-box">
+                        <i class="fas fa-star"></i> <strong>Recomendado:</strong> Comienza con "Azure DevOps - Primer acceso" y sigue en orden.
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(botMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 1000);
+    }
+
+    // ============================================
+    // FUNCIONES AUXILIARES
+    // ============================================
+
+    function openTutorial(tutorialId) {
+        const tutorials = {
+            'azure-1': { title: 'Azure DevOps - Primer acceso', url: '#' },
+            'azure-2': { title: 'Reportar bug en Azure', url: '#' },
+            'azure-3': { title: 'Ver y asignar tareas', url: '#' },
+            'testlink-1': { title: 'Crear caso de prueba', url: '#' },
+            'testlink-2': { title: 'Ejecutar prueba en TestLink', url: '#' },
+            'testlink-3': { title: 'Reportar resultados', url: '#' },
+            'planner-1': { title: 'Ver mis tareas en Planner', url: '#' },
+            'planner-2': { title: 'Actualizar progreso', url: '#' },
+            'planner-3': { title: 'Comunicar problemas', url: '#' }
+        };
+        
+        const tutorial = tutorials[tutorialId];
+        if (tutorial) {
+            alert(`Abriendo: ${tutorial.title}\n\nURL: ${tutorial.url}\n\n(Cambia estas URLs por las reales de tus tutoriales)`);
+        }
+    }
+
+    function copyEmailTemplate(type) {
+        const templates = {
+            'bug': `Asunto: [BUG] Descripción breve del problema
+Prioridad: [Alta/Media/Baja]
+Herramienta: [Azure/TestLink/Planner/Otra]
+Usuario: [Tu nombre]
+
+DESCRIPCIÓN DETALLADA:
+1. ¿Qué intentabas hacer?
+2. ¿Qué pasó en lugar de eso?
+3. Pasos para reproducir:
+   a. Paso 1
+   b. Paso 2
+   c. Paso 3
+4. Comportamiento esperado:
+5. Screenshots: [Adjuntar]
+6. Entorno: [Windows/Mac, Navegador, Versión]`,
+            
+            'duda': `Asunto: [CONSULTA] Breve descripción de la duda
+Herramienta: [Azure/TestLink/Planner]
+Nivel de urgencia: [Alta/Media/Baja]
+
+DETALLE DE LA CONSULTA:
+1. Contexto: ¿En qué estás trabajando?
+2. Duda específica: ¿Qué no entiendes?
+3. ¿Ya intentaste? [Sí/No] - ¿Qué intentaste?
+4. ¿En qué paso exacto te quedaste?
+5. ¿Necesitas: Explicación/Ejemplo práctico/Video?
+
+ADICIONAL:
+- ¿Es bloqueante para continuar? [Sí/No]
+- Fecha límite si aplica: [Fecha]`
+        };
+        
+        const template = templates[type];
+        if (template) {
+            navigator.clipboard.writeText(template).then(() => {
+                alert('✅ Plantilla copiada al portapapeles. Pégala en tu email.');
+            }).catch(err => {
+                alert('⚠️ No se pudo copiar. Copia manualmente:\n\n' + template);
+            });
+        }
+    }
+
+    function detectarFrustracion(mensaje) {
+        const palabrasFrustracion = ['no entiendo', 'difícil', 'complicado', 'confuso', 'ayuda', 'urgencia', 'emergencia', 'no puedo', 'imposible', 'frustrado'];
+        const mensajeLower = mensaje.toLowerCase();
+        
+        return palabrasFrustracion.some(palabra => mensajeLower.includes(palabra));
+    }
+
+    function mostrarAyudaFrustracion() {
+        const messagesDiv = document.getElementById('messages');
+        const helpMessage = document.createElement('div');
+        helpMessage.className = 'message bot-message';
+        helpMessage.innerHTML = `
+            <strong>QA Copilot:</strong> 
+            <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #ffeaa7;">
+                <h5 style="margin-top: 0; color: #856404;">
+                    <i class="fas fa-life-ring"></i> Veo que podrías necesitar ayuda adicional
+                </h5>
+                <p>¿Te gustaría que:</p>
+                <ol style="margin: 10px 0; padding-left: 20px;">
+                    <li>Te conecte con un <strong>mentor en vivo</strong></li>
+                    <li>Te muestre el <strong>tutorial paso a paso</strong></li>
+                    <li>Te dé un <strong>ejemplo práctico específico</strong></li>
+                    <li>O prefieres <strong>seguir intentando</strong> conmigo</li>
+                </ol>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="startExpertChat()" style="background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; flex: 1;">
+                        <i class="fas fa-user-tie"></i> Mentor en Vivo
+                    </button>
+                    <button onclick="showStepByStepTutorials()" style="background: #6f42c1; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; flex: 1;">
+                        <i class="fas fa-graduation-cap"></i> Tutorial Paso a Paso
+                    </button>
+                </div>
+            </div>
+        `;
+        messagesDiv.appendChild(helpMessage);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // ============================================
+    // SISTEMA DE TEMPORIZADOR DE AYUDA
+    // ============================================
+
+    function startHelpTimer() {
+        clearTimeout(helpTimer);
+        helpTimer = setTimeout(() => {
+            document.getElementById('emergencyHelp').style.display = 'flex';
+        }, 1 * 60 * 1000); // 1 minuto para pruebas (cambia a 5 * 60 * 1000 para producción)
+    }
+
+    // ============================================
+    // EVENT LISTENERS Y INICIALIZACIÓN
+    // ============================================
+
+    // Permitir Enter para enviar mensajes
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Click en botón de emergencia
+    document.getElementById('emergencyHelp').addEventListener('click', function() {
+        openWhatsApp();
+        this.style.display = 'none';
+    });
+
+    // Iniciar temporizador de ayuda al cargar la página
+    window.addEventListener('load', () => {
+        startHelpTimer();
+        
+        // Resetear temporizador cada vez que el usuario escribe
+        document.getElementById('userInput').addEventListener('input', startHelpTimer);
+    });
+    </script>
+</body>
+</html>

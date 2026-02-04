@@ -1,0 +1,12 @@
+{
+  "name": "qa-induction-chatbot",
+  "version": "1.0.0",
+  "description": "Chatbot de inducción para aprendices SENA en QA",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": ["qa", "induction", "chatbot", "training"],
+  "author": "Tu Nombre",
+  "license": "MIT"
+}
